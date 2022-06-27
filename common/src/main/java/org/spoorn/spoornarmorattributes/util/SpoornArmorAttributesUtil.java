@@ -22,6 +22,7 @@ public class SpoornArmorAttributesUtil {
     public static final String REROLL_NBT_KEY = "saa1_reroll";
     public static final String UPGRADE_NBT_KEY = "saa1_upgrade";
     public static final String BONUS_MAX_HEALTH = "bonusMaxHP";
+    public static final String DMG_REDUCTION = "dmgReduc";
     public static final Random RANDOM = new Random();
 
     public static boolean shouldTryGenAttr(ItemStack stack) {
@@ -136,6 +137,9 @@ public class SpoornArmorAttributesUtil {
                         case Attribute.MAX_HEALTH_NAME:
                             newNbt.putFloat(BONUS_MAX_HEALTH, Roller.rollMaxHealth());
                             break;
+                        case Attribute.DMG_REDUCTION_NAME:
+                            newNbt.putFloat(DMG_REDUCTION, Roller.rollDmgReduction());
+                            break;
                         default:
                             // do nothing
                             log.error("Unknown SpoornArmorAttribute: {}", name);
@@ -163,6 +167,9 @@ public class SpoornArmorAttributesUtil {
                 switch (name) {
                     case Attribute.MAX_HEALTH_NAME:
                         checkFloatUpgradeThenAdd(newNbt, BONUS_MAX_HEALTH, Roller.rollMaxHealth());
+                        break;
+                    case Attribute.DMG_REDUCTION_NAME:
+                        checkFloatUpgradeThenAdd(newNbt, DMG_REDUCTION, Roller.rollDmgReduction());
                         break;
                     default:
                         // do nothing

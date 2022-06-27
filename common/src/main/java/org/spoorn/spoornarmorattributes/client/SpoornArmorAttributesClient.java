@@ -12,8 +12,11 @@ import net.minecraft.util.Formatting;
 import org.spoorn.spoornarmorattributes.att.Attribute;
 import org.spoorn.spoornarmorattributes.util.SpoornArmorAttributesUtil;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Log4j2
@@ -21,7 +24,11 @@ import java.util.Optional;
 public class SpoornArmorAttributesClient {
 
     private static final Style MAX_HEALTH_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(16226554));
+    private static final Style DMG_REDUCTION_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(16568720));
     private static final MutableText MAX_HEALTH_TOOLTIP = new TranslatableText("saa.tooltip.maxhealth");
+    private static final MutableText DMG_REDUCTION_TOOLTIP = new TranslatableText("saa.tooltip.dmgReduc");
+    private static final DecimalFormatSymbols SYMBOLS = new DecimalFormatSymbols(Locale.US);
+    private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("#", SYMBOLS);
     
     public static void init() {
         log.info("Hello client from SpoornArmorAttributes!");
@@ -61,8 +68,12 @@ public class SpoornArmorAttributesClient {
                             case Attribute.MAX_HEALTH_NAME:
                                 handleMaxHealth(adds, subNbt);
                                 break;
+                            case Attribute.DMG_REDUCTION_NAME:
+                                handleDmgReduction(adds, subNbt);
+                                break;
                             default:
                                 // do nothing
+                                log.error("Unsupported Spoorn Armor Attribute {}", name);
                         }
                     }
                 }
@@ -89,8 +100,16 @@ public class SpoornArmorAttributesClient {
 
     private static void handleMaxHealth(List<Text> tooltips, NbtCompound nbt) {
         if (nbt.contains(BONUS_MAX_HEALTH)) {
-            float bonusMaxHealth = nbt.getFloat(BONUS_MAX_HEALTH);
-            MutableText text = new LiteralText("+" + Math.round(bonusMaxHealth)).append(MAX_HEALTH_TOOLTIP).setStyle(MAX_HEALTH_STYLE);
+            float value = nbt.getFloat(BONUS_MAX_HEALTH);
+            MutableText text = new LiteralText("+" + Math.round(value)).append(MAX_HEALTH_TOOLTIP).setStyle(MAX_HEALTH_STYLE);
+            tooltips.add(text);
+        }
+    }
+
+    private static void handleDmgReduction(List<Text> tooltips, NbtCompound nbt) {
+        if (nbt.contains(DMG_REDUCTION)) {
+            float value = nbt.getFloat(DMG_REDUCTION);
+            MutableText text = new LiteralText("+" + INTEGER_FORMAT.format(value)).append(DMG_REDUCTION_TOOLTIP).setStyle(DMG_REDUCTION_STYLE);
             tooltips.add(text);
         }
     }

@@ -11,13 +11,13 @@ public class MaxHealthConfig {
             "This means bonus health of +2.3 would round to just +2, or bonus health of +2.7 would round to +3")
     public boolean roundBonusHealth = true;
 
-    @Comment("Minimum bonus health [default = 0]")
-    public float minHealth = 0;
+    @Comment("Minimum bonus health [default = 1]")
+    public float minHealth = 1;
 
     @Comment("Maximum bonus health [2 health is 1 heart] [default = 20.0]")
     public float maxHealth = 20;
 
-    @Comment("True if damage should be calculated using a Gaussian distribution, else it will be a linearly random\n" +
+    @Comment("True if bonus health should be calculated using a Gaussian distribution, else it will be a linearly random\n" +
             "value between the minHealth and maxHealth [default = true]")
     public boolean useGaussian = true;
 
