@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[40,)"
+issueTrackerURL = "https://github.com/spoorn/SpoornArmorAttributes/issues"
+license = "MIT"
+
+[[mods]]
+modId = "spoornarmorattributes"
+version = "${version}"
+displayName = "Spoorn Armor Attributes"
+authors = "spoorn"
+description = '''
+Adds randomized armor attributes
+'''
+#logoFile = ""
+
+[[dependencies.spoornarmorattributes]]
+modId = "forge"
+mandatory = true
+versionRange = "[40,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.spoornarmorattributes]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.18,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.spoornarmorattributes]]
+modId = "cloth_config"
+mandatory = true
+versionRange = "[6,)"
+ordering = "NONE"
+side = "CLIENT"

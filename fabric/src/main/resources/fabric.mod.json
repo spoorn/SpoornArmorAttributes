@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "spoornarmorattributes",
+  "version": "${version}",
+  "name": "SpoornArmorAttributes",
+  "description": "Adds randomized armor attributes",
+  "authors": [
+    "spoorn"
+  ],
+  "contact": {
+    "website": "https://www.curseforge.com/minecraft/mc-mods/spoorn-armor-attributes"
+  },
+  "license": "LGPL-3.0",
+  "icon": "assets/spoornarmorattributes/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "org.spoorn.spoornarmorattributes.fabric.client.SpoornArmorAttributesClientFabric"
+    ],
+    "main": [
+      "org.spoorn.spoornarmorattributes.fabric.SpoornArmorAttributesFabric"
+    ]
+  },
+  "mixins": [
+    "spoornarmorattributes-common.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "fabric": "*",
+    "minecraft": ">=1.18",
+    "cloth-config2": "*"
+  }
+}
