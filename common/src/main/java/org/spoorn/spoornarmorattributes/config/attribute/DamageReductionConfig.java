@@ -11,8 +11,8 @@ public class DamageReductionConfig {
             "\tInstead, it would reduce the final damage you take by 50% once, then 50% again effectively giving 75% dmg reduction.")
     public double attributeChance = 0.05;
 
-    @Comment("Minimum damage percentage [default = 5]")
-    public float minDmgReduction = 5;
+    @Comment("Minimum damage percentage [default = 2.5]")
+    public float minDmgReduction = 2.5f;
 
     @Comment("Maximum damage percentage] [default = 90]")
     public float maxDmgReduction = 90;
@@ -21,10 +21,10 @@ public class DamageReductionConfig {
             "value between the minDmgReduction and maxDmgReduction [default = true]")
     public boolean useGaussian = true;
 
-    // The default mean and sd makes it so  there's a ~15% chance of getting above 25 dmg reduction, 0.04% of above 50
+    // The default mean and sd makes it so  there's a ~5% chance of getting above 25 dmg reduction, 0.01% of above 50
     // Use https://onlinestatbook.com/2/calculators/normal_dist.html
-    @Comment("Average damage reduction rate [default = 10]")
-    public float mean = 10;
+    @Comment("Average damage reduction rate [default = 5]")
+    public float mean = 5;
 
     @Comment("Standard deviation for the distribution [default = 12]")
     public double standardDeviation = 12;
