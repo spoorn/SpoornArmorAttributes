@@ -6,6 +6,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import org.spoorn.spoornarmorattributes.SpoornArmorAttributes;
+import org.spoorn.spoornarmorattributes.config.attribute.MaxHealthConfig;
 
 @Config(name = SpoornArmorAttributes.MODID)
 public class ModConfig implements ConfigData {
@@ -18,6 +19,8 @@ public class ModConfig implements ConfigData {
             "stats onto the armor if it is an upgrade [default = minecraft:diamond]")
     public String upgradeItem = "minecraft:diamond";
 
+    @Comment("Bonus Max Health attribute config")
+    public MaxHealthConfig maxHealthConfig = new MaxHealthConfig();
 
     public static void init() {
         AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);

@@ -4,8 +4,15 @@
   "package": "org.spoorn.spoornarmorattributes.mixin",
   "compatibilityLevel": "JAVA_16",
   "client": [
+    "ItemStackMixin"
   ],
   "mixins": [
+    "ItemMixin",
+    "ForgingScreenHandlerAccessor",
+    "ScreenHandlerAccessor",
+    "AnvilScreenHandlerMixin",
+    "ForgingScreenHandlerMixin",
+    "LivingEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -8,6 +8,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.spoorn.spoornarmorattributes.att.Attribute;
+import org.spoorn.spoornarmorattributes.att.Roller;
 import org.spoorn.spoornarmorattributes.config.ModConfig;
 
 import java.util.Map;
@@ -17,9 +18,10 @@ import java.util.Random;
 @Log4j2
 public class SpoornArmorAttributesUtil {
 
-    public static final String NBT_KEY = "saa3";
-    public static final String REROLL_NBT_KEY = "saa3_reroll";
-    public static final String UPGRADE_NBT_KEY = "saa3_upgrade";
+    public static final String NBT_KEY = "saa1";
+    public static final String REROLL_NBT_KEY = "saa1_reroll";
+    public static final String UPGRADE_NBT_KEY = "saa1_upgrade";
+    public static final String BONUS_MAX_HEALTH = "bonusMaxHP";
     public static final Random RANDOM = new Random();
 
     public static boolean shouldTryGenAttr(ItemStack stack) {
@@ -36,6 +38,21 @@ public class SpoornArmorAttributesUtil {
         NbtCompound res = new NbtCompound();
         root.put(NBT_KEY, res);
         return root;
+    }
+
+    public static Optional<NbtCompound> getSAANbtIfPresent(ItemStack stack) {
+        if (stack.hasNbt()) {
+            NbtCompound root = stack.getNbt();
+
+            if (root != null && root.contains(SpoornArmorAttributesUtil.NBT_KEY)) {
+                return Optional.of(root.getCompound(SpoornArmorAttributesUtil.NBT_KEY));
+            }
+        }
+        return Optional.empty();
+    }
+
+    public static boolean hasSAANbt(ItemStack stack) {
+        return stack.hasNbt() && stack.getNbt().contains(NBT_KEY);
     }
 
     public static boolean isRerollItem(ItemStack stack) {
@@ -116,6 +133,9 @@ public class SpoornArmorAttributesUtil {
                 if (SpoornArmorAttributesUtil.shouldEnable(att.chance)) {
                     NbtCompound newNbt = new NbtCompound();
                     switch (name) {
+                        case Attribute.MAX_HEALTH_NAME:
+                            newNbt.putFloat(BONUS_MAX_HEALTH, Roller.rollMaxHealth());
+                            break;
                         default:
                             // do nothing
                             log.error("Unknown SpoornArmorAttribute: {}", name);
@@ -141,6 +161,9 @@ public class SpoornArmorAttributesUtil {
                 NbtCompound newNbt = nbt.contains(name) ? nbt.getCompound(name) : new NbtCompound();
 
                 switch (name) {
+                    case Attribute.MAX_HEALTH_NAME:
+                        checkFloatUpgradeThenAdd(newNbt, BONUS_MAX_HEALTH, Roller.rollMaxHealth());
+                        break;
                     default:
                         // do nothing
                         log.error("Unknown SpoornArmorAttribute: {}", name);
