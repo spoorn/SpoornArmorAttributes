@@ -8,6 +8,7 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import org.spoorn.spoornarmorattributes.SpoornArmorAttributes;
 import org.spoorn.spoornarmorattributes.config.attribute.DamageReductionConfig;
 import org.spoorn.spoornarmorattributes.config.attribute.MaxHealthConfig;
+import org.spoorn.spoornarmorattributes.config.attribute.MovementSpeedConfig;
 
 @Config(name = SpoornArmorAttributes.MODID)
 public class ModConfig implements ConfigData {
@@ -25,6 +26,9 @@ public class ModConfig implements ConfigData {
 
     @Comment("Damage Reduction attribute config")
     public DamageReductionConfig dmgReductionConfig = new DamageReductionConfig();
+    
+    @Comment("Movement speed boost attribute config")
+    public MovementSpeedConfig movementSpeedConfig = new MovementSpeedConfig();
 
     public static void init() {
         AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);

@@ -1,6 +1,8 @@
 package org.spoorn.spoornarmorattributes.util;
 
 import lombok.extern.log4j.Log4j2;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -11,9 +13,7 @@ import org.spoorn.spoornarmorattributes.att.Attribute;
 import org.spoorn.spoornarmorattributes.att.Roller;
 import org.spoorn.spoornarmorattributes.config.ModConfig;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Log4j2
 public class SpoornArmorAttributesUtil {
@@ -23,8 +23,14 @@ public class SpoornArmorAttributesUtil {
     public static final String UPGRADE_NBT_KEY = "saa1_upgrade";
     public static final String BONUS_MAX_HEALTH = "bonusMaxHP";
     public static final String DMG_REDUCTION = "dmgReduc";
+    public static final String MOVEMENT_SPEED = "moveSpeed";
     public static final Random RANDOM = new Random();
-
+    
+    public static final Map<String, EntityAttribute> ATTRIBUTE_TO_ENTITY_ATTRIBUTE = Map.of(
+            Attribute.MAX_HEALTH_NAME, EntityAttributes.GENERIC_MAX_HEALTH,
+            Attribute.MOVEMENT_SPEED_NAME, EntityAttributes.GENERIC_MOVEMENT_SPEED
+    );
+    
     public static boolean shouldTryGenAttr(ItemStack stack) {
         return stack.getItem() instanceof ArmorItem;
     }
@@ -85,7 +91,7 @@ public class SpoornArmorAttributesUtil {
         return (chance > 0) && (RANDOM.nextDouble() < chance);
     }
 
-    public static float getRandomInRange(float min, float max) {
+    public static double getRandomInRange(double min, double max) {
         return RANDOM.nextFloat() * (max - min) + min;
     }
 
@@ -93,16 +99,16 @@ public class SpoornArmorAttributesUtil {
         return Math.round(RANDOM.nextFloat() * (max - min) + min);
     }
 
-    public static float drawRandom(boolean useGaussian, float mean, double sd, float min, float max) {
+    public static float drawRandom(boolean useGaussian, double mean, double sd, double min, double max) {
         if (useGaussian) {
             return (float) getNextGaussian(mean, sd, min, max);
         } else {
-            return getRandomInRange(min, max);
+            return (float) getRandomInRange(min, max);
         }
     }
 
     // Assumes parameters are correct
-    public static double getNextGaussian(float mean, double sd, float min, float max) {
+    public static double getNextGaussian(double mean, double sd, double min, double max) {
         double nextGaussian = RANDOM.nextGaussian() * sd + mean;
         if (nextGaussian < min) {
             nextGaussian = min;
@@ -140,6 +146,9 @@ public class SpoornArmorAttributesUtil {
                         case Attribute.DMG_REDUCTION_NAME:
                             newNbt.putFloat(DMG_REDUCTION, Roller.rollDmgReduction());
                             break;
+                        case Attribute.MOVEMENT_SPEED_NAME:
+                            newNbt.putFloat(MOVEMENT_SPEED, Roller.rollMovementSpeed());
+                            break;
                         default:
                             // do nothing
                             log.error("Unknown SpoornArmorAttribute: {}", name);
@@ -170,6 +179,9 @@ public class SpoornArmorAttributesUtil {
                         break;
                     case Attribute.DMG_REDUCTION_NAME:
                         checkFloatUpgradeThenAdd(newNbt, DMG_REDUCTION, Roller.rollDmgReduction());
+                        break;
+                    case Attribute.MOVEMENT_SPEED_NAME:
+                        checkFloatUpgradeThenAdd(newNbt, MOVEMENT_SPEED, Roller.rollMovementSpeed());
                         break;
                     default:
                         // do nothing

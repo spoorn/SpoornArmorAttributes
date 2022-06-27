@@ -1,7 +1,6 @@
 package org.spoorn.spoornarmorattributes.mixin;
 
-import static org.spoorn.spoornarmorattributes.util.SpoornArmorAttributesUtil.BONUS_MAX_HEALTH;
-import static org.spoorn.spoornarmorattributes.util.SpoornArmorAttributesUtil.DMG_REDUCTION;
+import static org.spoorn.spoornarmorattributes.util.SpoornArmorAttributesUtil.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -18,6 +17,7 @@ import org.spoorn.spoornarmorattributes.att.Attribute;
 import org.spoorn.spoornarmorattributes.config.ModConfig;
 import org.spoorn.spoornarmorattributes.util.SpoornArmorAttributesUtil;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Mixin(LivingEntity.class)
@@ -27,7 +27,7 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "getAttributeValue", at = @At(value = "RETURN"), cancellable = true)
     private void modifyMaxHealth(EntityAttribute attribute, CallbackInfoReturnable<Double> cir) {
-        if (attribute == EntityAttributes.GENERIC_MAX_HEALTH) {
+        if (attribute == EntityAttributes.GENERIC_MAX_HEALTH || attribute == EntityAttributes.GENERIC_MOVEMENT_SPEED) {
             try {
                 // Only apply to players
                 if ((Object) this instanceof PlayerEntity player && player.getInventory() != null) {
@@ -36,11 +36,28 @@ public abstract class LivingEntityMixin {
                         double res = cir.getReturnValue();
                         for (ItemStack stack : armorItems) {
                             Optional<NbtCompound> optNbt = SpoornArmorAttributesUtil.getSAANbtIfPresent(stack);
+                            
                             if (optNbt.isPresent()) {
                                 NbtCompound nbt = optNbt.get();
-                                if (nbt.contains(Attribute.MAX_HEALTH_NAME)) {
-                                    NbtCompound subNbt = nbt.getCompound(Attribute.MAX_HEALTH_NAME);
-                                    res += handleMaxHealth(subNbt);
+
+                                for (Map.Entry<String, Attribute> entry : Attribute.VALUES.entrySet()) {
+                                    String name = entry.getKey();
+                                    EntityAttribute mappedEntityAttribute = ATTRIBUTE_TO_ENTITY_ATTRIBUTE.get(name);
+                                    
+                                    if (mappedEntityAttribute == attribute && nbt.contains(name)) {
+                                        NbtCompound subNbt = nbt.getCompound(name);
+
+                                        switch (name) {
+                                            case Attribute.MAX_HEALTH_NAME:
+                                                res += handleMaxHealth(subNbt);
+                                                break;
+                                            case Attribute.MOVEMENT_SPEED_NAME:
+                                                res += handleMovementSpeed(subNbt);
+                                                break;
+                                            default:
+                                                // Do nothing
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -98,5 +115,12 @@ public abstract class LivingEntityMixin {
             return damage * (1 - nbt.getFloat(DMG_REDUCTION)/100);
         }
         return damage;
+    }
+
+    private float handleMovementSpeed(NbtCompound nbt) {
+        if (nbt.contains(MOVEMENT_SPEED)) {
+            return nbt.getFloat(MOVEMENT_SPEED);
+        }
+        return 0;
     }
 }

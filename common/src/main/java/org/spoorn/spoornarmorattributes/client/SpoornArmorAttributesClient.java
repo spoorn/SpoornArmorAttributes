@@ -25,9 +25,12 @@ public class SpoornArmorAttributesClient {
 
     private static final Style MAX_HEALTH_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(16226554));
     private static final Style DMG_REDUCTION_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(16568720));
+    private static final Style MOVEMENT_SPEED_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(16250004));
     private static final MutableText MAX_HEALTH_TOOLTIP = new TranslatableText("saa.tooltip.maxhealth");
     private static final MutableText DMG_REDUCTION_TOOLTIP = new TranslatableText("saa.tooltip.dmgReduc");
+    private static final MutableText MOVEMENT_SPEED_TOOLTIP = new TranslatableText("saa.tooltip.moveSpeed");
     private static final DecimalFormatSymbols SYMBOLS = new DecimalFormatSymbols(Locale.US);
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#", SYMBOLS);
     private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("#", SYMBOLS);
     
     public static void init() {
@@ -71,6 +74,9 @@ public class SpoornArmorAttributesClient {
                             case Attribute.DMG_REDUCTION_NAME:
                                 handleDmgReduction(adds, subNbt);
                                 break;
+                            case Attribute.MOVEMENT_SPEED_NAME:
+                                handleMovementSpeed(adds, subNbt);
+                                break;
                             default:
                                 // do nothing
                                 log.error("Unsupported Spoorn Armor Attribute {}", name);
@@ -110,6 +116,15 @@ public class SpoornArmorAttributesClient {
         if (nbt.contains(DMG_REDUCTION)) {
             float value = nbt.getFloat(DMG_REDUCTION);
             MutableText text = new LiteralText("+" + INTEGER_FORMAT.format(value)).append(DMG_REDUCTION_TOOLTIP).setStyle(DMG_REDUCTION_STYLE);
+            tooltips.add(text);
+        }
+    }
+
+    private static void handleMovementSpeed(List<Text> tooltips, NbtCompound nbt) {
+        if (nbt.contains(MOVEMENT_SPEED)) {
+            float value = nbt.getFloat(MOVEMENT_SPEED);
+            // Tries to show an integer value by multiplying by 10
+            MutableText text = new LiteralText("+" + DECIMAL_FORMAT.format(value * 10)).append(MOVEMENT_SPEED_TOOLTIP).setStyle(MOVEMENT_SPEED_STYLE);
             tooltips.add(text);
         }
     }

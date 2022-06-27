@@ -21,11 +21,11 @@ public class DamageReductionConfig {
             "value between the minDmgReduction and maxDmgReduction [default = true]")
     public boolean useGaussian = true;
 
-    // The default mean and sd makes it so  there's a ~5% chance of getting above 25 dmg reduction, 0.01% of above 50
+    // The default mean and sd makes it so  there's a ~2% chance of getting above 25 dmg reduction, ~0% of above 50
     // Use https://onlinestatbook.com/2/calculators/normal_dist.html
     @Comment("Average damage reduction rate [default = 5]")
     public float mean = 5;
 
-    @Comment("Standard deviation for the distribution [default = 12]")
-    public double standardDeviation = 12;
+    @Comment("Standard deviation for the distribution [default = 10]")
+    public double standardDeviation = 10;
 }

@@ -1,4 +1,5 @@
 {
   "saa.tooltip.maxhealth": " Max HP",
-  "saa.tooltip.dmgReduc": " Dmg Reduction"
+  "saa.tooltip.dmgReduc": " Dmg Reduction",
+  "saa.tooltip.moveSpeed": " Movement Speed"
 }
