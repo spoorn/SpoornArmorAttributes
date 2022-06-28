@@ -24,10 +24,10 @@ import java.util.Optional;
 public abstract class LivingEntityMixin {
 
     @Shadow public abstract Iterable<ItemStack> getArmorItems();
-
+    
     @Inject(method = "getAttributeValue", at = @At(value = "RETURN"), cancellable = true)
     private void modifyMaxHealth(EntityAttribute attribute, CallbackInfoReturnable<Double> cir) {
-        if (attribute == EntityAttributes.GENERIC_MAX_HEALTH || attribute == EntityAttributes.GENERIC_MOVEMENT_SPEED) {
+        if (attribute == EntityAttributes.GENERIC_MAX_HEALTH || attribute == EntityAttributes.GENERIC_MOVEMENT_SPEED || attribute == EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE) {
             try {
                 // Only apply to players
                 if ((Object) this instanceof PlayerEntity player && player.getInventory() != null) {
@@ -53,6 +53,9 @@ public abstract class LivingEntityMixin {
                                                 break;
                                             case Attribute.MOVEMENT_SPEED_NAME:
                                                 res += handleMovementSpeed(subNbt);
+                                                break;
+                                            case Attribute.KNOCKBACK_RESISTANCE_NAME:
+                                                res += handleKnockbackResistance(subNbt);
                                                 break;
                                             default:
                                                 // Do nothing
@@ -120,6 +123,13 @@ public abstract class LivingEntityMixin {
     private float handleMovementSpeed(NbtCompound nbt) {
         if (nbt.contains(MOVEMENT_SPEED)) {
             return nbt.getFloat(MOVEMENT_SPEED);
+        }
+        return 0;
+    }
+
+    private float handleKnockbackResistance(NbtCompound nbt) {
+        if (nbt.contains(KNOCKBACK_RESISTANCE)) {
+            return nbt.getFloat(KNOCKBACK_RESISTANCE);
         }
         return 0;
     }

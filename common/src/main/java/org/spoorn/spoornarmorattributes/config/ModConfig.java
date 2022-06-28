@@ -7,6 +7,7 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import org.spoorn.spoornarmorattributes.SpoornArmorAttributes;
 import org.spoorn.spoornarmorattributes.config.attribute.DamageReductionConfig;
+import org.spoorn.spoornarmorattributes.config.attribute.KnockbackResistanceConfig;
 import org.spoorn.spoornarmorattributes.config.attribute.MaxHealthConfig;
 import org.spoorn.spoornarmorattributes.config.attribute.MovementSpeedConfig;
 
@@ -27,8 +28,11 @@ public class ModConfig implements ConfigData {
     @Comment("Damage Reduction attribute config")
     public DamageReductionConfig dmgReductionConfig = new DamageReductionConfig();
     
-    @Comment("Movement speed boost attribute config")
+    @Comment("Movement Speed boost attribute config")
     public MovementSpeedConfig movementSpeedConfig = new MovementSpeedConfig();
+    
+    @Comment("Knockback Resistance attribute config")
+    public KnockbackResistanceConfig knockbackResistanceConfig = new KnockbackResistanceConfig();
 
     public static void init() {
         AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);

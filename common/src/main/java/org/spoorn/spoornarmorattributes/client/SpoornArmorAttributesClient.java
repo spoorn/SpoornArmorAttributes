@@ -26,9 +26,11 @@ public class SpoornArmorAttributesClient {
     private static final Style MAX_HEALTH_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(16226554));
     private static final Style DMG_REDUCTION_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(16568720));
     private static final Style MOVEMENT_SPEED_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(16250004));
+    private static final Style KNOCKBACK_RESISTANCE_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(8976303));
     private static final MutableText MAX_HEALTH_TOOLTIP = new TranslatableText("saa.tooltip.maxhealth");
     private static final MutableText DMG_REDUCTION_TOOLTIP = new TranslatableText("saa.tooltip.dmgReduc");
     private static final MutableText MOVEMENT_SPEED_TOOLTIP = new TranslatableText("saa.tooltip.moveSpeed");
+    private static final MutableText KNOCKBACK_RESISTANCE_TOOLTIP = new TranslatableText("saa.tooltip.knockResist");
     private static final DecimalFormatSymbols SYMBOLS = new DecimalFormatSymbols(Locale.US);
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#", SYMBOLS);
     private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("#", SYMBOLS);
@@ -76,6 +78,9 @@ public class SpoornArmorAttributesClient {
                                 break;
                             case Attribute.MOVEMENT_SPEED_NAME:
                                 handleMovementSpeed(adds, subNbt);
+                                break;
+                            case Attribute.KNOCKBACK_RESISTANCE_NAME:
+                                handleKnockbackResistance(adds, subNbt);
                                 break;
                             default:
                                 // do nothing
@@ -125,6 +130,15 @@ public class SpoornArmorAttributesClient {
             float value = nbt.getFloat(MOVEMENT_SPEED);
             // Tries to show an integer value by multiplying by 10
             MutableText text = new LiteralText("+" + DECIMAL_FORMAT.format(value * 10)).append(MOVEMENT_SPEED_TOOLTIP).setStyle(MOVEMENT_SPEED_STYLE);
+            tooltips.add(text);
+        }
+    }
+
+    private static void handleKnockbackResistance(List<Text> tooltips, NbtCompound nbt) {
+        if (nbt.contains(KNOCKBACK_RESISTANCE)) {
+            float value = nbt.getFloat(KNOCKBACK_RESISTANCE);
+            // Tries to show an integer value by multiplying by 10
+            MutableText text = new LiteralText("+" + INTEGER_FORMAT.format(value * 100)).append(KNOCKBACK_RESISTANCE_TOOLTIP).setStyle(KNOCKBACK_RESISTANCE_STYLE);
             tooltips.add(text);
         }
     }

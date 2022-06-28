@@ -4,11 +4,11 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
 public class MovementSpeedConfig {
 
-    @Comment("Chance for an armor item to have movement speed boost [0 = never, 1 = always] [default = 0.05]")
+    @Comment("Chance for an armor item to have movement speed boost [0 = never, 1 = always] [default = 0.05]\n" +
+            "Note: The tooltip will show movementSpeed * 10, so it looks like a nicer integer value.")
     public double attributeChance = 0.05;
 
-    @Comment("Minimum movement speed boost (for reference, vanilla default is 0.7) [default = 0.01]\n" +
-            "Note: The tooltip will show movementSpeed * 10, so it looks like a nicer integer value.")
+    @Comment("Minimum movement speed boost (for reference, vanilla default is 0.7) [default = 0.01]")
     public double minSpeed = 0.01;
 
     @Comment("Maximum movement speed boost (for reference, vanilla default is 0.7) [default = 0.1]")

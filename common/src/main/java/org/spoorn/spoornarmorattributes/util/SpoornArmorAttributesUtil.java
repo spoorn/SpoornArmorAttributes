@@ -24,11 +24,13 @@ public class SpoornArmorAttributesUtil {
     public static final String BONUS_MAX_HEALTH = "bonusMaxHP";
     public static final String DMG_REDUCTION = "dmgReduc";
     public static final String MOVEMENT_SPEED = "moveSpeed";
+    public static final String KNOCKBACK_RESISTANCE = "knockResist";
     public static final Random RANDOM = new Random();
     
     public static final Map<String, EntityAttribute> ATTRIBUTE_TO_ENTITY_ATTRIBUTE = Map.of(
             Attribute.MAX_HEALTH_NAME, EntityAttributes.GENERIC_MAX_HEALTH,
-            Attribute.MOVEMENT_SPEED_NAME, EntityAttributes.GENERIC_MOVEMENT_SPEED
+            Attribute.MOVEMENT_SPEED_NAME, EntityAttributes.GENERIC_MOVEMENT_SPEED,
+            Attribute.KNOCKBACK_RESISTANCE_NAME, EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE
     );
     
     public static boolean shouldTryGenAttr(ItemStack stack) {
@@ -149,6 +151,9 @@ public class SpoornArmorAttributesUtil {
                         case Attribute.MOVEMENT_SPEED_NAME:
                             newNbt.putFloat(MOVEMENT_SPEED, Roller.rollMovementSpeed());
                             break;
+                        case Attribute.KNOCKBACK_RESISTANCE_NAME:
+                            newNbt.putFloat(KNOCKBACK_RESISTANCE, Roller.rollKnockbackResistance());
+                            break;
                         default:
                             // do nothing
                             log.error("Unknown SpoornArmorAttribute: {}", name);
@@ -182,6 +187,9 @@ public class SpoornArmorAttributesUtil {
                         break;
                     case Attribute.MOVEMENT_SPEED_NAME:
                         checkFloatUpgradeThenAdd(newNbt, MOVEMENT_SPEED, Roller.rollMovementSpeed());
+                        break;
+                    case Attribute.KNOCKBACK_RESISTANCE_NAME:
+                        checkFloatUpgradeThenAdd(newNbt, KNOCKBACK_RESISTANCE, Roller.rollKnockbackResistance());
                         break;
                     default:
                         // do nothing
