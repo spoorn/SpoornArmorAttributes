@@ -1,17 +1,19 @@
 package org.spoorn.spoornarmorattributes.mixin;
 
 import static org.spoorn.spoornarmorattributes.util.SpoornArmorAttributesUtil.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spoorn.spoornarmorattributes.att.Attribute;
 import org.spoorn.spoornarmorattributes.config.ModConfig;
@@ -73,33 +75,40 @@ public abstract class LivingEntityMixin {
         }
     }
     
-    @Redirect(method = "applyDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setHealth(F)V"))
-    private void modifyFinalDamage(LivingEntity instance, float health) {
+    @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
+    private void applyBeforeDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         try {
             // Only apply to players
-            if (instance instanceof PlayerEntity player && player.getInventory() != null) {
-                Iterable<ItemStack> armorItems = this.getArmorItems();
+            if (((Object) this instanceof ServerPlayerEntity player) && player.getInventory() != null) {
+                Iterable<ItemStack> armorItems = player.getArmorItems();
                 if (armorItems != null) {
-                    float originalDamage = instance.getHealth() - health;
-                    float newDamage = instance.getHealth() - health;  // Assume this will be positive
                     for (ItemStack stack : armorItems) {
                         Optional<NbtCompound> optNbt = SpoornArmorAttributesUtil.getSAANbtIfPresent(stack);
                         if (optNbt.isPresent()) {
                             NbtCompound nbt = optNbt.get();
-                            if (nbt.contains(Attribute.DMG_REDUCTION_NAME)) {
-                                NbtCompound subNbt = nbt.getCompound(Attribute.DMG_REDUCTION_NAME);
-                                newDamage = handleDmgReduction(subNbt, newDamage);
+
+                            if (nbt.contains(Attribute.THORNS_NAME)) {
+                                NbtCompound subNbt = nbt.getCompound(Attribute.THORNS_NAME);
+                                handleThorns(subNbt, source, amount);
                             }
                         }
                     }
-                    health -= newDamage - originalDamage;
                 }
             }
         } catch (Exception e) {
             System.err.println("[SpoornArmorAttributes] Applying attribute effects to final damage failed: " + e);
         }
-        
-        instance.setHealth(health);
+    }
+
+    private void handleThorns(NbtCompound nbt, DamageSource source, float damage) {
+        if (nbt.contains(THORNS)) {
+            float returnDmgPercent = nbt.getFloat(THORNS);
+            Entity attacker = source.getAttacker();
+            if (attacker instanceof LivingEntity && !attacker.world.isClient) {
+                // this should be a PlayerEntity already
+                attacker.damage(DamageSource.player((PlayerEntity) (Object) this), damage * (returnDmgPercent / 100));
+            }
+        }
     }
     
     private float handleMaxHealth(NbtCompound nbt) {
@@ -111,13 +120,6 @@ public abstract class LivingEntityMixin {
             return res;
         }
         return 0;
-    }
-    
-    private float handleDmgReduction(NbtCompound nbt, float damage) {
-        if (nbt.contains(DMG_REDUCTION)) {
-            return damage * (1 - nbt.getFloat(DMG_REDUCTION)/100);
-        }
-        return damage;
     }
 
     private float handleMovementSpeed(NbtCompound nbt) {

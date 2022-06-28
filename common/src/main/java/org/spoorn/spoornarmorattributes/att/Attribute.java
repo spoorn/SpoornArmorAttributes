@@ -27,11 +27,13 @@ public class Attribute {
     public static final String DMG_REDUCTION_NAME = "DMG_REDUCTION";
     public static final String MOVEMENT_SPEED_NAME = "MOVE_SPEED";
     public static final String KNOCKBACK_RESISTANCE_NAME = "KNOCKBACK_RESIST";
+    public static final String THORNS_NAME = "THORNS";
     
     public static Attribute MAX_HEALTH;
     public static Attribute DMG_REDUCTION;
     public static Attribute MOVEMENT_SPEED;
     public static Attribute KNOCKBACK_RESISTANCE;
+    public static Attribute THORNS;
 
     public static Map<String, Attribute> VALUES = new HashMap<>();
     public static List<String> TOOLTIPS = new ArrayList<>();
@@ -52,5 +54,8 @@ public class Attribute {
         TOOLTIPS.add(DMG_REDUCTION.name);
         TOOLTIPS.add(MOVEMENT_SPEED.name);
         TOOLTIPS.add(KNOCKBACK_RESISTANCE.name);
+        THORNS = new Attribute(THORNS_NAME, ModConfig.get().thornsConfig.attributeChance);
+        VALUES.put(THORNS.name, THORNS);
+        TOOLTIPS.add(THORNS.name);
     }
 }

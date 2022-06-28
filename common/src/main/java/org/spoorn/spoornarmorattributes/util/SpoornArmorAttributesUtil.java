@@ -25,6 +25,7 @@ public class SpoornArmorAttributesUtil {
     public static final String DMG_REDUCTION = "dmgReduc";
     public static final String MOVEMENT_SPEED = "moveSpeed";
     public static final String KNOCKBACK_RESISTANCE = "knockResist";
+    public static final String THORNS = "thorns";
     public static final Random RANDOM = new Random();
     
     public static final Map<String, EntityAttribute> ATTRIBUTE_TO_ENTITY_ATTRIBUTE = Map.of(
@@ -154,6 +155,9 @@ public class SpoornArmorAttributesUtil {
                         case Attribute.KNOCKBACK_RESISTANCE_NAME:
                             newNbt.putFloat(KNOCKBACK_RESISTANCE, Roller.rollKnockbackResistance());
                             break;
+                        case Attribute.THORNS_NAME:
+                            newNbt.putFloat(THORNS, Roller.rollThorns());
+                            break;
                         default:
                             // do nothing
                             log.error("Unknown SpoornArmorAttribute: {}", name);
@@ -190,6 +194,9 @@ public class SpoornArmorAttributesUtil {
                         break;
                     case Attribute.KNOCKBACK_RESISTANCE_NAME:
                         checkFloatUpgradeThenAdd(newNbt, KNOCKBACK_RESISTANCE, Roller.rollKnockbackResistance());
+                        break;
+                    case Attribute.THORNS_NAME:
+                        checkFloatUpgradeThenAdd(newNbt, THORNS, Roller.rollThorns());
                         break;
                     default:
                         // do nothing

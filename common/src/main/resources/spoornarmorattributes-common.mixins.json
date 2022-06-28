@@ -12,7 +12,8 @@
     "ScreenHandlerAccessor",
     "AnvilScreenHandlerMixin",
     "ForgingScreenHandlerMixin",
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "PlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
