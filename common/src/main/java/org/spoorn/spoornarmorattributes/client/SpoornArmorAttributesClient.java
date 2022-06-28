@@ -7,7 +7,10 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.*;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.text.TextColor;
 import net.minecraft.util.Formatting;
 import org.spoorn.spoornarmorattributes.att.Attribute;
 import org.spoorn.spoornarmorattributes.util.SpoornArmorAttributesUtil;
@@ -28,11 +31,11 @@ public class SpoornArmorAttributesClient {
     private static final Style MOVEMENT_SPEED_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(16250004));
     private static final Style KNOCKBACK_RESISTANCE_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(8976303));
     private static final Style THORNS_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(7551762));
-    private static final MutableText MAX_HEALTH_TOOLTIP = new TranslatableText("saa.tooltip.maxhealth");
-    private static final MutableText DMG_REDUCTION_TOOLTIP = new TranslatableText("saa.tooltip.dmgReduc");
-    private static final MutableText MOVEMENT_SPEED_TOOLTIP = new TranslatableText("saa.tooltip.moveSpeed");
-    private static final MutableText KNOCKBACK_RESISTANCE_TOOLTIP = new TranslatableText("saa.tooltip.knockResist");
-    private static final MutableText THORNS_TOOLTIP = new TranslatableText("saa.tooltip.thorns");
+    private static final MutableText MAX_HEALTH_TOOLTIP = Text.translatable("saa.tooltip.maxhealth");
+    private static final MutableText DMG_REDUCTION_TOOLTIP = Text.translatable("saa.tooltip.dmgReduc");
+    private static final MutableText MOVEMENT_SPEED_TOOLTIP = Text.translatable("saa.tooltip.moveSpeed");
+    private static final MutableText KNOCKBACK_RESISTANCE_TOOLTIP = Text.translatable("saa.tooltip.knockResist");
+    private static final MutableText THORNS_TOOLTIP = Text.translatable("saa.tooltip.thorns");
     private static final DecimalFormatSymbols SYMBOLS = new DecimalFormatSymbols(Locale.US);
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#", SYMBOLS);
     private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("#", SYMBOLS);
@@ -60,13 +63,13 @@ public class SpoornArmorAttributesClient {
                 NbtCompound root = stack.getNbt();
                 if (root.getBoolean(REROLL_NBT_KEY)) {
                     adds = new ArrayList<>();
-                    adds.add(new LiteralText(""));
-                    adds.add(new LiteralText("???").formatted(Formatting.AQUA));
+                    adds.add(Text.literal(""));
+                    adds.add(Text.literal("???").formatted(Formatting.AQUA));
                 }
             } else if (optNbt.isPresent()) {
                 NbtCompound nbt = optNbt.get();
                 adds = new ArrayList<>();
-                adds.add(new LiteralText(""));
+                adds.add(Text.literal(""));
 
                 for (String name : Attribute.TOOLTIPS) {
                     if (nbt.contains(name)) {
@@ -102,8 +105,8 @@ public class SpoornArmorAttributesClient {
                     if (adds == null) {
                         adds = new ArrayList<>();
                     }
-                    adds.add(new LiteralText(""));
-                    adds.add(new LiteralText("+++").formatted(Formatting.RED));
+                    adds.add(Text.literal(""));
+                    adds.add(Text.literal("+++").formatted(Formatting.RED));
                 }
             }
 
@@ -117,7 +120,7 @@ public class SpoornArmorAttributesClient {
     private static void handleMaxHealth(List<Text> tooltips, NbtCompound nbt) {
         if (nbt.contains(BONUS_MAX_HEALTH)) {
             float value = nbt.getFloat(BONUS_MAX_HEALTH);
-            MutableText text = new LiteralText("+" + Math.round(value)).append(MAX_HEALTH_TOOLTIP).setStyle(MAX_HEALTH_STYLE);
+            MutableText text = Text.literal("+" + Math.round(value)).append(MAX_HEALTH_TOOLTIP).setStyle(MAX_HEALTH_STYLE);
             tooltips.add(text);
         }
     }
@@ -125,7 +128,7 @@ public class SpoornArmorAttributesClient {
     private static void handleDmgReduction(List<Text> tooltips, NbtCompound nbt) {
         if (nbt.contains(DMG_REDUCTION)) {
             float value = nbt.getFloat(DMG_REDUCTION);
-            MutableText text = new LiteralText("+" + INTEGER_FORMAT.format(value)).append(DMG_REDUCTION_TOOLTIP).setStyle(DMG_REDUCTION_STYLE);
+            MutableText text = Text.literal("+" + INTEGER_FORMAT.format(value)).append(DMG_REDUCTION_TOOLTIP).setStyle(DMG_REDUCTION_STYLE);
             tooltips.add(text);
         }
     }
@@ -134,7 +137,7 @@ public class SpoornArmorAttributesClient {
         if (nbt.contains(MOVEMENT_SPEED)) {
             float value = nbt.getFloat(MOVEMENT_SPEED);
             // Tries to show an integer value by multiplying by 10
-            MutableText text = new LiteralText("+" + INTEGER_FORMAT.format(value)).append(MOVEMENT_SPEED_TOOLTIP).setStyle(MOVEMENT_SPEED_STYLE);
+            MutableText text = Text.literal("+" + INTEGER_FORMAT.format(value)).append(MOVEMENT_SPEED_TOOLTIP).setStyle(MOVEMENT_SPEED_STYLE);
             tooltips.add(text);
         }
     }
@@ -143,7 +146,7 @@ public class SpoornArmorAttributesClient {
         if (nbt.contains(KNOCKBACK_RESISTANCE)) {
             float value = nbt.getFloat(KNOCKBACK_RESISTANCE);
             // Tries to show an integer value by multiplying by 10
-            MutableText text = new LiteralText("+" + INTEGER_FORMAT.format(value * 100)).append(KNOCKBACK_RESISTANCE_TOOLTIP).setStyle(KNOCKBACK_RESISTANCE_STYLE);
+            MutableText text = Text.literal("+" + INTEGER_FORMAT.format(value * 100)).append(KNOCKBACK_RESISTANCE_TOOLTIP).setStyle(KNOCKBACK_RESISTANCE_STYLE);
             tooltips.add(text);
         }
     }
@@ -151,7 +154,7 @@ public class SpoornArmorAttributesClient {
     private static void handleThorns(List<Text> tooltips, NbtCompound nbt) {
         if (nbt.contains(THORNS)) {
             float value = nbt.getFloat(THORNS);
-            MutableText text = new LiteralText("+" + INTEGER_FORMAT.format(value)).append(THORNS_TOOLTIP).setStyle(THORNS_STYLE);
+            MutableText text = Text.literal("+" + INTEGER_FORMAT.format(value)).append(THORNS_TOOLTIP).setStyle(THORNS_STYLE);
             tooltips.add(text);
         }
     }
