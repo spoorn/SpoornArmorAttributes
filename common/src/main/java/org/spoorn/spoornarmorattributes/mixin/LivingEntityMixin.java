@@ -83,6 +83,7 @@ public abstract class LivingEntityMixin {
             if (((Object) this instanceof ServerPlayerEntity player) && player.getInventory() != null) {
                 Iterable<ItemStack> armorItems = player.getArmorItems();
                 if (armorItems != null) {
+                    float thornsDamage = 0;
                     for (ItemStack stack : armorItems) {
                         Optional<NbtCompound> optNbt = SpoornArmorAttributesUtil.getSAANbtIfPresent(stack);
                         if (optNbt.isPresent()) {
@@ -90,9 +91,15 @@ public abstract class LivingEntityMixin {
 
                             if (nbt.contains(Attribute.THORNS_NAME)) {
                                 NbtCompound subNbt = nbt.getCompound(Attribute.THORNS_NAME);
-                                handleThorns(subNbt, source, amount);
+                                thornsDamage += handleThorns(subNbt, source, amount);
                             }
                         }
+                    }
+
+                    // Thorns damage
+                    if (thornsDamage > 0) {
+                        // this should be a PlayerEntity already
+                        source.getAttacker().damage(DamageSource.player((PlayerEntity) (Object) this), thornsDamage);
                     }
                 }
             }
@@ -101,15 +108,15 @@ public abstract class LivingEntityMixin {
         }
     }
 
-    private void handleThorns(NbtCompound nbt, DamageSource source, float damage) {
+    private float handleThorns(NbtCompound nbt, DamageSource source, float damage) {
         if (nbt.contains(THORNS)) {
             float returnDmgPercent = nbt.getFloat(THORNS);
             Entity attacker = source.getAttacker();
             if (attacker instanceof LivingEntity && !attacker.world.isClient) {
-                // this should be a PlayerEntity already
-                attacker.damage(DamageSource.player((PlayerEntity) (Object) this), damage * (returnDmgPercent / 100));
+                return damage * (returnDmgPercent / 100);
             }
         }
+        return 0;
     }
     
     private float handleMaxHealth(NbtCompound nbt) {
