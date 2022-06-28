@@ -20,11 +20,11 @@ public class MovementSpeedConfig {
             "value between the minSpeed and maxSpeed [default = true]")
     public boolean useGaussian = true;
 
-    // The default mean and sd makes it so  there's a ~1.2% chance of getting above 50% movement speed
+    // The default mean and sd makes it so  there's a ~0.1% chance of getting above 50% movement speed
     // Use https://onlinestatbook.com/2/calculators/normal_dist.html
     @Comment("Average movement speed boost [default = 5]")
     public double mean = 5;
 
-    @Comment("Standard deviation for the distribution [default = 20]")
-    public double standardDeviation = 20;
+    @Comment("Standard deviation for the distribution [default = 15]")
+    public double standardDeviation = 15;
 }
