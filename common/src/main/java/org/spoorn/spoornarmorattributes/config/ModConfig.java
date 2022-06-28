@@ -6,10 +6,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import org.spoorn.spoornarmorattributes.SpoornArmorAttributes;
-import org.spoorn.spoornarmorattributes.config.attribute.DamageReductionConfig;
-import org.spoorn.spoornarmorattributes.config.attribute.KnockbackResistanceConfig;
-import org.spoorn.spoornarmorattributes.config.attribute.MaxHealthConfig;
-import org.spoorn.spoornarmorattributes.config.attribute.MovementSpeedConfig;
+import org.spoorn.spoornarmorattributes.config.attribute.*;
 
 @Config(name = SpoornArmorAttributes.MODID)
 public class ModConfig implements ConfigData {
@@ -33,6 +30,9 @@ public class ModConfig implements ConfigData {
     
     @Comment("Knockback Resistance attribute config")
     public KnockbackResistanceConfig knockbackResistanceConfig = new KnockbackResistanceConfig();
+    
+    @Comment("Explosive attribute config")
+    public ExplosiveConfig explosiveConfig = new ExplosiveConfig();
 
     public static void init() {
         AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
