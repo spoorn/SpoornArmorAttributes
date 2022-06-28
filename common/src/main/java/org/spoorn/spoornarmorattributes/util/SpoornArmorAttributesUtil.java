@@ -12,7 +12,6 @@ import net.minecraft.util.registry.Registry;
 import org.spoorn.spoornarmorattributes.att.Attribute;
 import org.spoorn.spoornarmorattributes.att.Roller;
 import org.spoorn.spoornarmorattributes.config.ModConfig;
-import org.spoorn.spoornarmorattributes.entity.damage.SAAExplosionDamageSource;
 
 import java.util.*;
 
@@ -26,11 +25,8 @@ public class SpoornArmorAttributesUtil {
     public static final String DMG_REDUCTION = "dmgReduc";
     public static final String MOVEMENT_SPEED = "moveSpeed";
     public static final String KNOCKBACK_RESISTANCE = "knockResist";
-    public static final String EXPLOSION_CHANCE = "explosionChance";
     public static final Random RANDOM = new Random();
-    private static final String EXPLOSION_DAMAGE_SOURCE_ID = "saa.explosion";
-    public static final SAAExplosionDamageSource SAA_EXPLOSION_DAMAGE_SOURCE = new SAAExplosionDamageSource(EXPLOSION_DAMAGE_SOURCE_ID);
-
+    
     public static final Map<String, EntityAttribute> ATTRIBUTE_TO_ENTITY_ATTRIBUTE = Map.of(
             Attribute.MAX_HEALTH_NAME, EntityAttributes.GENERIC_MAX_HEALTH,
             Attribute.MOVEMENT_SPEED_NAME, EntityAttributes.GENERIC_MOVEMENT_SPEED,
@@ -158,9 +154,6 @@ public class SpoornArmorAttributesUtil {
                         case Attribute.KNOCKBACK_RESISTANCE_NAME:
                             newNbt.putFloat(KNOCKBACK_RESISTANCE, Roller.rollKnockbackResistance());
                             break;
-                        case Attribute.EXPLOSIVE_NAME:
-                            newNbt.putFloat(EXPLOSION_CHANCE, Roller.rollExplosive());
-                            break;
                         default:
                             // do nothing
                             log.error("Unknown SpoornArmorAttribute: {}", name);
@@ -197,9 +190,6 @@ public class SpoornArmorAttributesUtil {
                         break;
                     case Attribute.KNOCKBACK_RESISTANCE_NAME:
                         checkFloatUpgradeThenAdd(newNbt, KNOCKBACK_RESISTANCE, Roller.rollKnockbackResistance());
-                        break;
-                    case Attribute.EXPLOSIVE_NAME:
-                        checkFloatUpgradeThenAdd(newNbt, EXPLOSION_CHANCE, Roller.rollExplosive());
                         break;
                     default:
                         // do nothing

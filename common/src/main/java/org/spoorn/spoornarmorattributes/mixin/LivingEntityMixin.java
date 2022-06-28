@@ -1,15 +1,12 @@
 package org.spoorn.spoornarmorattributes.mixin;
 
 import static org.spoorn.spoornarmorattributes.util.SpoornArmorAttributesUtil.*;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.world.explosion.Explosion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spoorn.spoornarmorattributes.att.Attribute;
 import org.spoorn.spoornarmorattributes.config.ModConfig;
-import org.spoorn.spoornarmorattributes.config.attribute.ExplosiveConfig;
 import org.spoorn.spoornarmorattributes.util.SpoornArmorAttributesUtil;
 
 import java.util.Map;
@@ -77,9 +73,8 @@ public abstract class LivingEntityMixin {
         }
     }
     
-    
     @Redirect(method = "applyDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setHealth(F)V"))
-    private void modifyFinalDamage(LivingEntity instance, float health, DamageSource source, float amount) {
+    private void modifyFinalDamage(LivingEntity instance, float health) {
         try {
             // Only apply to players
             if (instance instanceof PlayerEntity player && player.getInventory() != null) {
@@ -94,11 +89,6 @@ public abstract class LivingEntityMixin {
                             if (nbt.contains(Attribute.DMG_REDUCTION_NAME)) {
                                 NbtCompound subNbt = nbt.getCompound(Attribute.DMG_REDUCTION_NAME);
                                 newDamage = handleDmgReduction(subNbt, newDamage);
-                            }
-
-                            if (nbt.contains(Attribute.EXPLOSIVE_NAME)) {
-                                NbtCompound subNbt = nbt.getCompound(Attribute.EXPLOSIVE_NAME);
-                                handleExplosive(subNbt, source);
                             }
                         }
                     }
@@ -128,18 +118,6 @@ public abstract class LivingEntityMixin {
             return damage * (1 - nbt.getFloat(DMG_REDUCTION)/100);
         }
         return damage;
-    }
-
-    private void handleExplosive(NbtCompound nbt, DamageSource source) {
-        if (nbt.contains(EXPLOSION_CHANCE)) {
-            float explosionChance = nbt.getFloat(EXPLOSION_CHANCE);
-            Entity attacker = source.getAttacker();
-            ExplosiveConfig config = ModConfig.get().explosiveConfig;
-            if (attacker instanceof LivingEntity && !attacker.world.isClient && SpoornArmorAttributesUtil.shouldEnable(explosionChance)) {
-                attacker.world.createExplosion(attacker, SAA_EXPLOSION_DAMAGE_SOURCE, null, attacker.getX(), attacker.getY(), attacker.getZ(),
-                        (float) config.explosionPower, config.causeFires, config.breakBlocks ? Explosion.DestructionType.BREAK : Explosion.DestructionType.NONE);
-            }
-        }
     }
 
     private float handleMovementSpeed(NbtCompound nbt) {
