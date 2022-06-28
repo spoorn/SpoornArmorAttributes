@@ -15,9 +15,15 @@ public class ModConfig implements ConfigData {
             "in an Anvil to reroll attributes [default = minecraft:lapis_lazuli]")
     public String rerollItem = "minecraft:lapis_lazuli";
     
+    @Comment("Reroll level cost [default = 0]")
+    public int rerollLevelCost = 0;
+    
     @Comment("Upgrade item.  Pair an armor piece with this item in an Anvil to roll bonus attributes and only adds\n" +
             "stats onto the armor if it is an upgrade [default = minecraft:diamond]")
     public String upgradeItem = "minecraft:diamond";
+    
+    @Comment("Upgrade level cost [default = 1]")
+    public int upgradeLevelCost = 1;
 
     @Comment("Bonus Max Health attribute config")
     public MaxHealthConfig maxHealthConfig = new MaxHealthConfig();
