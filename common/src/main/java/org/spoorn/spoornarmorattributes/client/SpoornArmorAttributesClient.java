@@ -134,7 +134,7 @@ public class SpoornArmorAttributesClient {
         if (nbt.contains(MOVEMENT_SPEED)) {
             float value = nbt.getFloat(MOVEMENT_SPEED);
             // Tries to show an integer value by multiplying by 10
-            MutableText text = new LiteralText("+" + DECIMAL_FORMAT.format(value * 10)).append(MOVEMENT_SPEED_TOOLTIP).setStyle(MOVEMENT_SPEED_STYLE);
+            MutableText text = new LiteralText("+" + INTEGER_FORMAT.format(value)).append(MOVEMENT_SPEED_TOOLTIP).setStyle(MOVEMENT_SPEED_STYLE);
             tooltips.add(text);
         }
     }

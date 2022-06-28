@@ -36,6 +36,7 @@ public abstract class LivingEntityMixin {
                     Iterable<ItemStack> armorItems = this.getArmorItems();
                     if (armorItems != null) {
                         double res = cir.getReturnValue();
+                        double original = res;
                         for (ItemStack stack : armorItems) {
                             Optional<NbtCompound> optNbt = SpoornArmorAttributesUtil.getSAANbtIfPresent(stack);
                             
@@ -54,7 +55,7 @@ public abstract class LivingEntityMixin {
                                                 res += handleMaxHealth(subNbt);
                                                 break;
                                             case Attribute.MOVEMENT_SPEED_NAME:
-                                                res += handleMovementSpeed(subNbt);
+                                                res += handleMovementSpeed(subNbt, (float) original);
                                                 break;
                                             case Attribute.KNOCKBACK_RESISTANCE_NAME:
                                                 res += handleKnockbackResistance(subNbt);
@@ -122,11 +123,11 @@ public abstract class LivingEntityMixin {
         return 0;
     }
 
-    private float handleMovementSpeed(NbtCompound nbt) {
+    private float handleMovementSpeed(NbtCompound nbt, float originalSpeed) {
         if (nbt.contains(MOVEMENT_SPEED)) {
-            return nbt.getFloat(MOVEMENT_SPEED);
+            return originalSpeed * nbt.getFloat(MOVEMENT_SPEED) / 100;
         }
-        return 0;
+        return originalSpeed;
     }
 
     private float handleKnockbackResistance(NbtCompound nbt) {
