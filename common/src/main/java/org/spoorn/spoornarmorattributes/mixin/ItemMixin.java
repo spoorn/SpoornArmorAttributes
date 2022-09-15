@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spoorn.spoornarmorattributes.config.ModConfig;
 import org.spoorn.spoornarmorattributes.util.SpoornArmorAttributesUtil;
 
 @Mixin(Item.class)
@@ -19,7 +20,7 @@ public class ItemMixin {
      */
     @Inject(method = "inventoryTick", at = @At(value = "HEAD"))
     public void addCustomNbt(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
-        if (!world.isClient() && SpoornArmorAttributesUtil.shouldTryGenAttr(stack)) {
+        if (ModConfig.get().applyOnInventoryTick && !world.isClient() && SpoornArmorAttributesUtil.shouldTryGenAttr(stack)) {
             NbtCompound root = stack.getOrCreateNbt();
 
             SpoornArmorAttributesUtil.rollAttributes(root);
