@@ -67,27 +67,53 @@ public class AnvilScreenHandlerMixin {
 
         ItemStack swaStack = canRerollSAA(input1, input2);
         if (swaStack != null) {
-            ItemStack output = swaStack.copy();
+            ItemStack existingOutputStack = accessor.getOutput().getStack(0);
+            boolean useExistingOutput = existingOutputStack != null && !existingOutputStack.isEmpty()
+                    && existingOutputStack.getItem() == swaStack.getItem();
+            ItemStack output;
+
+            // use existing output stack and modify NBT in case the reroll item is used for other purposes
+            if (useExistingOutput) {
+                output = existingOutputStack;
+            } else {
+                output = swaStack.copy();
+            }
+            
             NbtCompound root = output.getNbt();
             // This will cause a reroll no matter what.  We could do the same thing with Upgrading in the future if it's simpler than the mixin in ForgingScreenHandlerMixin
             root.remove(NBT_KEY);   
             root.putBoolean(REROLL_NBT_KEY, true);
 
-            this.levelCost.set(ModConfig.get().rerollLevelCost);
-            this.repairItemUsage = 1;
-            accessor.getOutput().setStack(0, output);
-            ((ScreenHandlerAccessor) this).trySendContentUpdates();
-        } else {
-            swaStack = canUpgradeSAA(input1, input2);
-            if (swaStack != null) {
-                ItemStack output = swaStack.copy();
-                NbtCompound root = output.getNbt();
-                root.putBoolean(UPGRADE_NBT_KEY, true);
-
-                this.levelCost.set(ModConfig.get().upgradeLevelCost);
+            if (!useExistingOutput) {
+                this.levelCost.set(ModConfig.get().rerollLevelCost);
                 this.repairItemUsage = 1;
                 accessor.getOutput().setStack(0, output);
                 ((ScreenHandlerAccessor) this).trySendContentUpdates();
+            }
+        } else {
+            swaStack = canUpgradeSAA(input1, input2);
+            if (swaStack != null) {
+                ItemStack existingOutputStack = accessor.getOutput().getStack(0);
+                boolean useExistingOutput = existingOutputStack != null && !existingOutputStack.isEmpty()
+                        && existingOutputStack.getItem() == swaStack.getItem();
+                ItemStack output;
+
+                // use existing output stack and modify NBT in case the upgrade item is used for other purposes
+                if (useExistingOutput) {
+                    output = existingOutputStack;
+                } else {
+                    output = swaStack.copy();
+                }
+                
+                NbtCompound root = output.getNbt();
+                root.putBoolean(UPGRADE_NBT_KEY, true);
+
+                if (!useExistingOutput) {
+                    this.levelCost.set(ModConfig.get().upgradeLevelCost);
+                    this.repairItemUsage = 1;
+                    accessor.getOutput().setStack(0, output);
+                    ((ScreenHandlerAccessor) this).trySendContentUpdates();
+                }
             }
         }
     }
