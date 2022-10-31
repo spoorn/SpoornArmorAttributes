@@ -99,7 +99,7 @@ public abstract class LivingEntityMixin {
                     // Thorns damage
                     if (thornsDamage > 0) {
                         // this should be a PlayerEntity already
-                        source.getAttacker().damage(DamageSource.player((PlayerEntity) (Object) this), thornsDamage);
+                        source.getAttacker().damage(DamageSource.player((PlayerEntity) (Object) this).setUsesMagic(), thornsDamage);
                     }
                 }
             }
