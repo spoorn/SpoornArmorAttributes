@@ -1,0 +1,7 @@
+{
+  "saa.tooltip.maxhealth": "§c最大生命§c",
+  "saa.tooltip.dmgReduc": "%§7伤害减免§7",
+  "saa.tooltip.moveSpeed": "%§b移动速度§b",
+  "saa.tooltip.knockResist": "%§e击退抗性§e",
+  "saa.tooltip.thorns": "%§2伤害反弹§2"
+}
