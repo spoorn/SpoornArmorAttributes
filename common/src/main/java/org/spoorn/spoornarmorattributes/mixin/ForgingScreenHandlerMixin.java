@@ -28,7 +28,7 @@ public class ForgingScreenHandlerMixin {
      * 
      * Grabs the original ItemStack local variable, for compatibility with SpoornWeaponAttributes which does a @Redirect
      */
-    @Inject(method = "transferSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ForgingScreenHandler;insertItem(Lnet/minecraft/item/ItemStack;IIZ)Z", ordinal = 0),
+    @Inject(method = "quickMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ForgingScreenHandler;insertItem(Lnet/minecraft/item/ItemStack;IIZ)Z", ordinal = 0),
         locals = LocalCapture.CAPTURE_FAILHARD)
     private void rollOrUpgradeShiftClick(PlayerEntity player, int index, CallbackInfoReturnable<ItemStack> cir, ItemStack itemStack, Slot slot, ItemStack itemStack2) {
         if ((Object)this instanceof AnvilScreenHandler && itemStack2 != null) {

@@ -7,8 +7,8 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.spoorn.spoornarmorattributes.att.Attribute;
 import org.spoorn.spoornarmorattributes.att.Roller;
 import org.spoorn.spoornarmorattributes.config.ModConfig;
@@ -67,7 +67,7 @@ public class SpoornArmorAttributesUtil {
 
     public static boolean isRerollItem(ItemStack stack) {
         String rerollItem = ModConfig.get().rerollItem;
-        Optional<Item> item = Registry.ITEM.getOrEmpty(new Identifier(rerollItem));
+        Optional<Item> item = Registries.ITEM.getOrEmpty(new Identifier(rerollItem));
         if (item.isEmpty()) {
             throw new RuntimeException("Reroll item " + rerollItem + " was not found in the registry!");
         }
@@ -76,7 +76,7 @@ public class SpoornArmorAttributesUtil {
 
     public static boolean isUpgradeItem(ItemStack stack) {
         String upgradeItem = ModConfig.get().upgradeItem;
-        Optional<Item> item = Registry.ITEM.getOrEmpty(new Identifier(upgradeItem));
+        Optional<Item> item = Registries.ITEM.getOrEmpty(new Identifier(upgradeItem));
         if (item.isEmpty()) {
             throw new RuntimeException("Upgrade item " + upgradeItem + " was not found in the registry!");
         }

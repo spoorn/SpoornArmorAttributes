@@ -9,6 +9,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,27 +27,37 @@ import java.util.Optional;
 public abstract class LivingEntityMixin {
 
     @Shadow public abstract Iterable<ItemStack> getArmorItems();
+
+
+    @Inject(method = "getAttributeValue(Lnet/minecraft/registry/entry/RegistryEntry;)D", at = @At(value = "RETURN"), cancellable = true)
+    private void modifyMaxHealthRegistry(RegistryEntry<EntityAttribute> attribute, CallbackInfoReturnable<Double> cir) {
+        cir.setReturnValue(modifyMaxHealthAttribute(attribute.value(), cir.getReturnValue()));
+    }
     
-    @Inject(method = "getAttributeValue", at = @At(value = "RETURN"), cancellable = true)
+    @Inject(method = "getAttributeValue(Lnet/minecraft/entity/attribute/EntityAttribute;)D", at = @At(value = "RETURN"), cancellable = true)
     private void modifyMaxHealth(EntityAttribute attribute, CallbackInfoReturnable<Double> cir) {
+        cir.setReturnValue(modifyMaxHealthAttribute(attribute, cir.getReturnValue()));
+    }
+    
+    private double modifyMaxHealthAttribute(EntityAttribute attribute, Double returnValue) {
         if (attribute == EntityAttributes.GENERIC_MAX_HEALTH || attribute == EntityAttributes.GENERIC_MOVEMENT_SPEED || attribute == EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE) {
             try {
                 // Only apply to players
                 if ((Object) this instanceof PlayerEntity player && player.getInventory() != null) {
                     Iterable<ItemStack> armorItems = this.getArmorItems();
                     if (armorItems != null) {
-                        double res = cir.getReturnValue();
+                        double res = returnValue;
                         double original = res;
                         for (ItemStack stack : armorItems) {
                             Optional<NbtCompound> optNbt = SpoornArmorAttributesUtil.getSAANbtIfPresent(stack);
-                            
+
                             if (optNbt.isPresent()) {
                                 NbtCompound nbt = optNbt.get();
 
                                 for (Map.Entry<String, Attribute> entry : Attribute.VALUES.entrySet()) {
                                     String name = entry.getKey();
                                     EntityAttribute mappedEntityAttribute = ATTRIBUTE_TO_ENTITY_ATTRIBUTE.get(name);
-                                    
+
                                     if (mappedEntityAttribute == attribute && nbt.contains(name)) {
                                         NbtCompound subNbt = nbt.getCompound(name);
 
@@ -67,13 +78,14 @@ public abstract class LivingEntityMixin {
                                 }
                             }
                         }
-                        cir.setReturnValue(res);
+                        return res;
                     }
                 }
             } catch (Exception e) {
                 System.err.println("[SpoornArmorAttributes] Applying attribute effects to max health failed: " + e);
             }
         }
+        return returnValue;
     }
     
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
