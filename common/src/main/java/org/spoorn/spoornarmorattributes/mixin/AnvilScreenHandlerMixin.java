@@ -81,7 +81,9 @@ public class AnvilScreenHandlerMixin {
             
             NbtCompound root = output.getNbt();
             // This will cause a reroll no matter what.  We could do the same thing with Upgrading in the future if it's simpler than the mixin in ForgingScreenHandlerMixin
-            root.remove(NBT_KEY);   
+            if (root.contains(NBT_KEY)) {
+                root.remove(NBT_KEY);
+            }
             root.putBoolean(REROLL_NBT_KEY, true);
 
             if (!useExistingOutput) {
@@ -133,9 +135,9 @@ public class AnvilScreenHandlerMixin {
     }
 
     private ItemStack canRerollSAA(ItemStack stack1, ItemStack stack2) {
-        if (SpoornArmorAttributesUtil.hasSAANbt(stack1) && SpoornArmorAttributesUtil.isRerollItem(stack2)) {
+        if (SpoornArmorAttributesUtil.shouldTryGenAttr(stack1) && SpoornArmorAttributesUtil.isRerollItem(stack2)) {
             return stack1;
-        } else if (SpoornArmorAttributesUtil.hasSAANbt(stack2) && SpoornArmorAttributesUtil.isRerollItem(stack1)) {
+        } else if (SpoornArmorAttributesUtil.shouldTryGenAttr(stack2) && SpoornArmorAttributesUtil.isRerollItem(stack1)) {
             return stack2;
         }
         return null;
