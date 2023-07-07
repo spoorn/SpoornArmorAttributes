@@ -111,7 +111,7 @@ public abstract class LivingEntityMixin {
                     // Thorns damage
                     if (thornsDamage > 0) {
                         // this should be a PlayerEntity already
-                        source.getAttacker().damage(DamageSource.player((PlayerEntity) (Object) this).setUsesMagic(), thornsDamage);
+                        source.getAttacker().damage(source.getAttacker().getDamageSources().thorns((PlayerEntity) (Object) this), thornsDamage);
                     }
                 }
             }
@@ -124,7 +124,7 @@ public abstract class LivingEntityMixin {
         if (nbt.contains(THORNS)) {
             float returnDmgPercent = nbt.getFloat(THORNS);
             Entity attacker = source.getAttacker();
-            if (attacker instanceof LivingEntity && !attacker.world.isClient) {
+            if (attacker instanceof LivingEntity && !attacker.getWorld().isClient) {
                 return damage * (returnDmgPercent / 100);
             }
         }
